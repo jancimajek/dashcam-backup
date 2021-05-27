@@ -1,12 +1,19 @@
 #!/bin/bash
 
+# Strict mode: http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
 
 SOURCE_VID="/Volumes/DASHCAM/DCIM/100MEDIA"
 TARGET_VID="/Volumes/My Passport for Mac/Dashcam/Video"
 
+
 echo "Source Video: $SOURCE_VID"
 echo "Target Video: $TARGET_VID"
 echo "========================================"
+
+
 
 ###################################################################################################
 ### Read and process all regular files from the SOURCE_VID using `for`
