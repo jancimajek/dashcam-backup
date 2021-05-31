@@ -20,6 +20,10 @@ echo "========================================"
 ### HOWTO: https://www.cyberciti.biz/tips/handling-filenames-with-spaces-in-bash.html
 ###################################################################################################
 
+# Initiate counters
+copied=0
+skipped=0
+
 # Read all files into array
 OLDIFS=$IFS
 IFS=$'\n' 
@@ -51,13 +55,27 @@ for (( i=0; i<${#fileArray[@]}; i++ )); do
   retVal=$?
   set -e
 
-  echo "Source:  $file"
-  echo "Target:  $targetFile"
-  echo "RetVal:  $retVal"
-  echo "Copied:  $copied"
-  echo "Skipped: $skipped"
-  echo  "-----"
+  # Increment appropriate counters and handle errors
+  if [[ $retVal -eq 0 ]]; then 
+    ((copied++))
+  else 
+    ((skipped++))
+  fi
+
+  # echo "Source:  $file"
+  # echo "Target:  $targetFile"
+  # echo "RetVal:  $retVal"
+  # echo "Copied:  $copied"
+  # echo "Skipped: $skipped"
+  # echo  "-----"
 done
+
+# Print out stats
+echo "----------------------------------------"
+echo "Copied:  $copied"
+echo "Skipped: $skipped"
+echo "TOTAL:   $(($copied+$skipped))"
+echo "========================================"
 
 
 ###################################################################################################
