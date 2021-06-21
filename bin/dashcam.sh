@@ -14,6 +14,27 @@ TARGET_GPS="${TARGET}/Dashcam/GPS"
 TARGET_VID="${TARGET}/Dashcam/Video"
 
 
+if [[ ! -e "$SOURCE" || ! -e "$TARGET" ]]; then
+  [[ ! -e "$SOURCE" ]] && echo "Error: Source volume not mounted: $SOURCE"
+  [[ ! -e "$TARGET" ]] && echo "Error: Target volume not mounted: $TARGET"
+  exit
+fi
+
+### DEBUG
+# SOURCE_VID="$HOME/tmp/source"
+# SOURCE_GPS="$HOME/tmp/dashcam test with spaces"
+# TARGET_VID="$HOME/tmp/target"
+# TARGET_VID="$HOME/tmp/gps"
+### END OF DEBUG
+
+# echo "Source GPS: $SOURCE_GPS"
+# echo "Target GPS: $TARGET_GPS"
+# echo "----------------------------------------"
+# echo "Source Video: $SOURCE_VID"
+# echo "Target Video: $TARGET_VID"
+# echo "========================================"
+
+
 function copyFiles() {
   local source="$1"
   local target="$2"
