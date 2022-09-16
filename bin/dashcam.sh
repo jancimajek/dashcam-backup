@@ -52,6 +52,7 @@ function copyFiles() {
   # Initiate counters
   copied=0
   skipped=0
+  errors=0
 
   # Read all files into array
   OLDIFS=$IFS
@@ -64,6 +65,7 @@ function copyFiles() {
     echo "----------------------------------------"
     echo "✅ Copied:  $copied / $filesCount"
     echo "⏩ Skipped: $skipped / $filesCount"
+    [[ $errors -gt 0 ]] && echo "❌ Errors:  $errors / $filesCount"
     echo "⨊  TOTAL:   $(($copied+$skipped+$errors)) / $filesCount"
     echo "========================================"
   }
@@ -74,6 +76,7 @@ function copyFiles() {
 
   function error() {
     progress "❌" "$2"
+    ((errors++))
     stats
     echo "✨ Done"
 
