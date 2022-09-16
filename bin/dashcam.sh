@@ -112,6 +112,10 @@ function copyFiles() {
       if [[ srcSize -ne tgtSize ]]; then
         error 3 "Error: Target file exists and is DIFERENT SIZE than source: $file (${srcSize}B) -❌→ $targetFile (${tgtSize}B)"
       fi
+
+      progress "⏩" "Target file exists, skipping: $targetFile"
+      ((skipped++))
+      continue
     fi
 
     # Copy and rename file into the target dir without overwriting
@@ -126,7 +130,7 @@ function copyFiles() {
       ((copied++))
       progress "✅" "$file → $targetFile"
     else 
-      # error "Error: $errorMsg"
+      error "Error: $errorMsg"
     fi
 
     # echo "Source:  $file"
