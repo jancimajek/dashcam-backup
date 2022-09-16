@@ -90,15 +90,16 @@ function copyFiles() {
     # Copy and rename file into the target dir without overwriting
     # file --> TARGET_VID/YYYY-MM/YYYY-MM-DD/YYYY-MM-DD-HH-MM-SS-FILENAME.EXT
     set +e
-    cp -nvp "${file}" "$targetFile"
+    errorMsg=$(cp -nvp "${file}" "$targetFile" 2>&1)
     retVal=$?
     set -e
 
     # Increment appropriate counters and handle errors
     if [[ $retVal -eq 0 ]]; then 
       ((copied++))
+      echo "✅ $file → $targetFile"
     else 
-      ((skipped++))
+      error "Error: $errorMsg"
     fi
 
     # echo "Source:  $file"
