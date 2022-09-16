@@ -53,6 +53,7 @@ function copyFiles() {
   copied=0
   skipped=0
   errors=0
+  total=0
 
   # Read all files into array
   OLDIFS=$IFS
@@ -71,7 +72,7 @@ function copyFiles() {
   }
 
   function progress() {
-    echo "$1 $2"
+    echo "$1 [$total/$filesCount] $2"
   }
 
   function error() {
@@ -104,6 +105,8 @@ function copyFiles() {
 
     # Check if target file exists
     if [[ -e "$targetFile" ]]; then
+      ((total++))
+
       # If target is newer than source, error out
       if [[ "$targetFile" -nt "$file" ]]; then
         error 2 "Error: Target file exists and is NEWER than source: $file -❌→ $targetFile"
@@ -129,6 +132,7 @@ function copyFiles() {
     set -e
 
     # Increment appropriate counters and handle errors
+    ((total++))
     if [[ $retVal -eq 0 ]]; then 
       ((copied++))
       progress "✅" "$file → $targetFile"
