@@ -68,6 +68,10 @@ function copyFiles() {
     echo "========================================"
   }
 
+  function progress() {
+    echo "$1 $2"
+  }
+
 
   # Process files in the array
   for (( i=0; i<$filesCount; i++ )); do
@@ -91,7 +95,7 @@ function copyFiles() {
     if [[ -e "$targetFile" ]]; then
       # If target is newer than source, error out
       if [[ "$targetFile" -nt "$file" ]]; then
-        echo "Error: Target file exists and is NEWER than source: $file -❌→ $targetFile"
+        progress "❌" "Error: Target file exists and is NEWER than source: $file -❌→ $targetFile"
         exit
       fi
 
@@ -99,7 +103,7 @@ function copyFiles() {
       srcSize=$(stat -f "%z" "$file")
       tgtSize=$(stat -f "%z" "$targetFile")
       if [[ srcSize -ne tgtSize ]]; then
-        echo "Error: Target file exists and is DIFERENT SIZE than source: $file (${srcSize}B) -❌→ $targetFile (${tgtSize}B)"
+        progress "❌" "Error: Target file exists and is DIFERENT SIZE than source: $file (${srcSize}B) -❌→ $targetFile (${tgtSize}B)"
         exit
       fi
     fi
@@ -114,9 +118,9 @@ function copyFiles() {
     # Increment appropriate counters and handle errors
     if [[ $retVal -eq 0 ]]; then 
       ((copied++))
-      echo "✅ $file → $targetFile"
+      progress "✅" "$file → $targetFile"
     else 
-      error "Error: $errorMsg"
+      # error "Error: $errorMsg"
     fi
 
     # echo "Source:  $file"
