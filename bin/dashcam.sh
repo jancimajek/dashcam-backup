@@ -94,6 +94,14 @@ function copyFiles() {
         echo "Error: Target file exists and is NEWER than source: $file -❌→ $targetFile"
         exit
       fi
+
+      # If file sizes don't match
+      srcSize=$(stat -f "%z" "$file")
+      tgtSize=$(stat -f "%z" "$targetFile")
+      if [[ srcSize -ne tgtSize ]]; then
+        echo "Error: Target file exists and is DIFERENT SIZE than source: $file (${srcSize}B) -❌→ $targetFile (${tgtSize}B)"
+        exit
+      fi
     fi
 
     # Copy and rename file into the target dir without overwriting
