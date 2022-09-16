@@ -87,6 +87,15 @@ function copyFiles() {
       mkdir -pv "$targetDir"
     fi
 
+    # Check if target file exists
+    if [[ -e "$targetFile" ]]; then
+      # If target is newer than source, error out
+      if [[ "$targetFile" -nt "$file" ]]; then
+        echo "Error: Target file exists and is NEWER than source: $file -❌→ $targetFile"
+        exit
+      fi
+    fi
+
     # Copy and rename file into the target dir without overwriting
     # file --> TARGET_VID/YYYY-MM/YYYY-MM-DD/YYYY-MM-DD-HH-MM-SS-FILENAME.EXT
     set +e
