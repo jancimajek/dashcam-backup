@@ -15,8 +15,8 @@ TARGET_VID="${TARGET}/Dashcam/Video"
 
 
 if [[ ! -e "$SOURCE" || ! -e "$TARGET" ]]; then
-  [[ ! -e "$SOURCE" ]] && echo "Error: Source volume not mounted: $SOURCE"
-  [[ ! -e "$TARGET" ]] && echo "Error: Target volume not mounted: $TARGET"
+  [[ ! -e "$SOURCE" ]] && echo "❌ Error: Source volume not mounted: $SOURCE"
+  [[ ! -e "$TARGET" ]] && echo "❌ Error: Target volume not mounted: $TARGET"
   exit
 fi
 
@@ -58,9 +58,19 @@ function copyFiles() {
   IFS=$'\n' 
   fileArray=($(find "$source" -type f -not -name ".*" | sort))
   IFS=$OLDIFS
+  filesCount=${#fileArray[@]};
+
+  function stats() {
+    echo "----------------------------------------"
+    echo "✅ Copied:  $copied / $filesCount"
+    echo "⏩ Skipped: $skipped / $filesCount"
+    echo "⨊  TOTAL:   $(($copied+$skipped+$errors)) / $filesCount"
+    echo "========================================"
+  }
+
 
   # Process files in the array
-  for (( i=0; i<${#fileArray[@]}; i++ )); do
+  for (( i=0; i<$filesCount; i++ )); do
     file=${fileArray[$i]}
 
     # Generate date/timestamps based on file modified time
@@ -100,17 +110,14 @@ function copyFiles() {
   done
 
   # Print out stats
-  echo "----------------------------------------"
-  echo "Copied:  $copied"
-  echo "Skipped: $skipped"
-  echo "TOTAL:   $(($copied+$skipped))"
-  echo "========================================"
-
+  stats
 }
 
 
 copyFiles "$SOURCE_GPS" "$TARGET_GPS"
 copyFiles "$SOURCE_VID" "$TARGET_VID"
+
+echo "✨ Done"
 
 
 ###################################################################################################
