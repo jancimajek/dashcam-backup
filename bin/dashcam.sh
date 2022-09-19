@@ -54,7 +54,7 @@ function copyFiles() {
   skipped=0
   errors=0
   total=0
-  start=$(node -e 'console.log(Date.now()-5000000)')
+  start=$(node -e 'console.log(Date.now())')
 
   # Read all files into array
   OLDIFS=$IFS
@@ -75,20 +75,10 @@ function copyFiles() {
   function progress() {
     local now=$(node -e 'console.log(Date.now())')
     local elapsed=$(( $now - $start ))
+    local remainingMs=$( echo "(($elapsed / $total) * ($filesCount - $total)) / 1000" | bc)
 
-    local remaining=$( echo "scale=0; (($elapsed / $total) * ($filesCount - $total))" | bc)
-    local remainingH=$( echo "scale=0; $remaining /1000 / 3600" | bc)
-    local remainingM=$( echo "scale=0; $remaining /1000 / 60 % 60" | bc)
-    local remainingMs=$( echo "scale=0; $remaining % 60000" | bc)
-    local remainingS=$( echo "scale=3; $remainingMs / 1000" | bc)
-
-    # echo "$remaining $remainingMs $remainingS $remainingM $remainingH"
-
-    if [[ "$remainingH" -gt 0 ]]; then remainingStr=$( printf "%d:%d:%.3fs" "$remainingH" "$remainingM" "$remainingS");
-    else if [[ "$remainingM" -gt 0 ]]; then remainingStr=$( printf "%d:%.3fs" "$remainingM" "$remainingS");
-    else remainingStr=$( printf "%.3fs" "$remainingS"); fi; fi
-    
-    printf "%s [%03d/%03d] %s [🕐 %s]\n" "$1" "$total" "$filesCount" "$2" "$remainingStr"
+echo "(($elapsed / $total) * ($filesCount - $total)) / 1000"
+    printf "%s [%03d/%03d] %s [🕐 %ss]\n" $1 $total $filesCount $2 $remainingMs
   }
 
   function error() {
