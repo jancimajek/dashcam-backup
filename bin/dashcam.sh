@@ -63,6 +63,19 @@ function copyFiles() {
   IFS=$OLDIFS
   filesCount=${#fileArray[@]};
 
+  function getTimeStr() {
+    local timeInMs="$1"
+
+    local ms=$( echo "scale=0; $timeInMs % 60000" | bc)
+    local s=$( echo "scale=3; $ms / 1000" | bc)
+    local m=$( echo "scale=0; $timeInMs /1000 / 60 % 60" | bc)
+    local h=$( echo "scale=0; $timeInMs /1000 / 3600" | bc)
+
+    [[ "$h" -gt 0 ]] && printf "%dh%02dm" "$h" "$m" && return
+    [[ "$m" -gt 0 ]] && printf "%02dm%02.0fs" "$m" "$s" && return
+    printf "%02.1fs" "$s"; 
+  }
+
   function stats() {
     echo "----------------------------------------"
     echo "✅ Copied:  $copied / $filesCount"
@@ -75,10 +88,11 @@ function copyFiles() {
   function progress() {
     local now=$(node -e 'console.log(Date.now())')
     local elapsed=$(( $now - $start ))
-    local remainingMs=$( echo "(($elapsed / $total) * ($filesCount - $total)) / 1000" | bc)
+    local remaining=$( echo "scale=0; (($elapsed / $total) * ($filesCount - $total))" | bc)
 
-echo "(($elapsed / $total) * ($filesCount - $total)) / 1000"
-    printf "%s [%03d/%03d] %s [🕐 %ss]\n" $1 $total $filesCount $2 $remainingMs
+    local remainingStr=$( getTimeStr "$remaining");
+    
+    printf "%s [%03d/%03d] %s [⏳%s]\n" "$1" "$total" "$filesCount" "$2" "$remainingStr"
   }
 
   function error() {
