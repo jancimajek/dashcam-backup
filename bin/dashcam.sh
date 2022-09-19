@@ -43,26 +43,6 @@ function copyFiles() {
   echo "Target: $target"
   echo "----------------------------------------"
 
-
-  ###################################################################################################
-  ### Read and process all regular files from the $sourceDir using `find` and arrays
-  ### HOWTO: https://www.cyberciti.biz/tips/handling-filenames-with-spaces-in-bash.html
-  ###################################################################################################
-
-  # Initiate counters
-  copied=0
-  skipped=0
-  errors=0
-  total=0
-  start=$(node -e 'console.log(Date.now())')
-
-  # Read all files into array
-  OLDIFS=$IFS
-  IFS=$'\n' 
-  fileArray=($(find "$source" -type f -not -name ".*" | sort))
-  IFS=$OLDIFS
-  filesCount=${#fileArray[@]};
-
   function getTimeStr() {
     local timeInMs="$1"
 
@@ -104,6 +84,26 @@ function copyFiles() {
     exit $1
   }
 
+
+
+  ###################################################################################################
+  ### Read and process all regular files from the $sourceDir using `find` and arrays
+  ### HOWTO: https://www.cyberciti.biz/tips/handling-filenames-with-spaces-in-bash.html
+  ###################################################################################################
+
+  # Initiate counters
+  copied=0
+  skipped=0
+  errors=0
+  total=0
+  start=$(now)
+
+  # Read all files into array
+  OLDIFS=$IFS
+  IFS=$'\n' 
+  fileArray=($(find "$source" -type f -not -name ".*" | sort))
+  IFS=$OLDIFS
+  filesCount=${#fileArray[@]};
 
   # Process files in the array
   for (( i=0; i<$filesCount; i++ )); do
@@ -173,7 +173,7 @@ function copyFiles() {
 }
 
 
-copyFiles "$SOURCE_GPS" "$TARGET_GPS"
+# copyFiles "$SOURCE_GPS" "$TARGET_GPS"
 copyFiles "$SOURCE_VID" "$TARGET_VID"
 
 echo "✨ Done"
