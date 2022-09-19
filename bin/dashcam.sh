@@ -61,11 +61,14 @@ function copyFiles() {
   }
 
   function stats() {
+    local elapsed=$(( $(now) - $start ))
+
     echo "----------------------------------------"
     echo "✅ Copied:  $copied / $filesCount"
     echo "⏩ Skipped: $skipped / $filesCount"
     [[ $errors -gt 0 ]] && echo "❌ Errors:  $errors / $filesCount"
-    echo "⨊  TOTAL:   $(($copied+$skipped+$errors)) / $filesCount"
+    echo "⨊  TOTAL:   $(( $copied + $skipped + $errors)) / $filesCount"
+    echo "⌛️ Took:    $( getTimeStr "$elapsed" )"
     echo "========================================"
   }
 
