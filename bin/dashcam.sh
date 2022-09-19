@@ -43,6 +43,10 @@ function copyFiles() {
   echo "Target: $target"
   echo "----------------------------------------"
 
+  function now() {
+    node -e 'console.log(Date.now())'
+  }
+
   function getTimeStr() {
     local timeInMs="$1"
 
@@ -66,13 +70,8 @@ function copyFiles() {
   }
 
   function progress() {
-    local now=$(node -e 'console.log(Date.now())')
-    local elapsed=$(( $now - $start ))
-    local remaining=$( echo "scale=0; (($elapsed / $total) * ($filesCount - $total))" | bc)
-
-    local remainingStr=$( getTimeStr "$remaining");
-    
-    printf "%s [%03d/%03d] %s [⏳%s]\n" "$1" "$total" "$filesCount" "$2" "$remainingStr"
+    local remaining=$( echo "scale=0; ((( $(now) - $start ) / $total) * ($filesCount - $total))" | bc)
+    printf "%s [%03d/%03d] %s [⏳%s]\n" "$1" "$total" "$filesCount" "$2" "$( getTimeStr "$remaining")"
   }
 
   function error() {
