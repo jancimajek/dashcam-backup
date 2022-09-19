@@ -64,10 +64,10 @@ function copyFiles() {
     local elapsed=$(( $(now) - $start ))
 
     echo "----------------------------------------"
-    echo "✅ Copied:  $copied / $filesCount"
-    echo "⏩ Skipped: $skipped / $filesCount"
-    [[ $errors -gt 0 ]] && echo "❌ Errors:  $errors / $filesCount"
-    echo "⨊  TOTAL:   $(( $copied + $skipped + $errors)) / $filesCount"
+    printf "✅ Copied:  %03d / %03d\n" "$copied" "$filesCount"
+    printf "⏩ Skipped: %03d / %03d\n" "$skipped" "$filesCount"
+    [[ $errors -gt 0 ]] && printf "❌ Errors:  %03d / %03d\n" "$errors" "$filesCount"
+    printf "⨊  TOTAL:   %03d / %03d\n" $(( $copied + $skipped + $errors)) "$filesCount"
     echo "⌛️ Took:    $( getTimeStr "$elapsed" )"
     echo "========================================"
   }
@@ -175,7 +175,7 @@ function copyFiles() {
 }
 
 
-# copyFiles "$SOURCE_GPS" "$TARGET_GPS"
+copyFiles "$SOURCE_GPS" "$TARGET_GPS"
 copyFiles "$SOURCE_VID" "$TARGET_VID"
 
 echo "✨ Done"
