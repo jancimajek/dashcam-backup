@@ -185,6 +185,17 @@ if [[ "$targetYN" == "yes" ]]; then
   echo
 fi
 
+read -p "❓ Format and/or dismount ${SOURCE}? [FORMAT/dis/no] " sourceYN
+if [[ "$sourceYN" == "FORMAT" ]]; then 
+  diskutil reformat "${SOURCE}"
+  diskutil eject "${SOURCE}"
+  echo
+else if [[ "$sourceYN" == "dis" ]]; then 
+  diskutil eject "${SOURCE}"
+  echo
+fi; fi
+
+
 echo "✨ Done"
 
 
