@@ -178,6 +178,13 @@ function copyFiles() {
 copyFiles "$SOURCE_GPS" "$TARGET_GPS"
 copyFiles "$SOURCE_VID" "$TARGET_VID"
 
+
+read -p "❓ Dismount ${TARGET}? [yes/no] " targetYN
+if [[ "$targetYN" == "yes" ]]; then 
+  diskutil eject "${TARGET}"
+  echo
+fi
+
 echo "✨ Done"
 
 
