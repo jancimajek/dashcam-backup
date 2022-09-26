@@ -17,7 +17,7 @@ TARGET_VID="${TARGET}/Dashcam/Video"
 if [[ ! -e "$SOURCE" || ! -e "$TARGET" ]]; then
   [[ ! -e "$SOURCE" ]] && echo "❌ Error: Source volume not mounted: $SOURCE"
   [[ ! -e "$TARGET" ]] && echo "❌ Error: Target volume not mounted: $TARGET"
-  exit
+  exit 1
 fi
 
 ### DEBUG
@@ -159,7 +159,7 @@ function copyFiles() {
       ((copied++))
       progress "✅" "$file → $targetFile"
     else 
-      error "Error: $errorMsg"
+      error 4 "Error: $errorMsg"
     fi
 
     # echo "Source:  $file"
