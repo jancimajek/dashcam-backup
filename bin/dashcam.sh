@@ -4,21 +4,35 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+SOURCE_VOLUME="/Volumes/DASHCAM"
+TARGET_VOLUME="/Volumes/My Passport for Mac"
 
-SOURCE="/Volumes/DASHCAM"
-SOURCE_GPS="${SOURCE}/gps"
-SOURCE_VID="${SOURCE}/DCIM/100MEDIA"
+function usage () {
+  echo "Usage: dashcam.sh [-s <SOURCE_VOLUME>] [-t <TARGET_VOLUME>] [-h]"
+  echo " - Default SOURCE_VOLUME: $SOURCE_VOLUME"
+  echo " - Default TARGET_VOLUME: $TARGET_VOLUME"
+  exit
+}
 
-TARGET="/Volumes/My Passport for Mac"
-TARGET_GPS="${TARGET}/Dashcam/GPS"
-TARGET_VID="${TARGET}/Dashcam/Video"
+while getopts ":s:t:h" flag; do
+  case "$flag" in
+    s) SOURCE_VOLUME="$OPTARG";;
+    t) TARGET_VOLUME="$OPTARG";;
+    h | *) usage;;
+  esac
+done
 
-
-if [[ ! -e "$SOURCE" || ! -e "$TARGET" ]]; then
-  [[ ! -e "$SOURCE" ]] && echo "❌ Error: Source volume not mounted: $SOURCE"
-  [[ ! -e "$TARGET" ]] && echo "❌ Error: Target volume not mounted: $TARGET"
+if [[ ! -e "$SOURCE_VOLUME" || ! -e "$TARGET_VOLUME" ]]; then
+  [[ ! -e "$SOURCE_VOLUME" ]] && echo "❌ Error: Source volume not mounted: $SOURCE_VOLUME"
+  [[ ! -e "$TARGET_VOLUME" ]] && echo "❌ Error: Target volume not mounted: $TARGET_VOLUME"
   exit 1
 fi
+
+SOURCE_GPS="${SOURCE_VOLUME}/gps"
+SOURCE_VID="${SOURCE_VOLUME}/DCIM/100MEDIA"
+TARGET_GPS="${TARGET_VOLUME}/Dashcam/GPS"
+TARGET_VID="${TARGET_VOLUME}/Dashcam/Video"
+
 
 ### DEBUG
 # SOURCE_VID="$HOME/tmp/source"
@@ -179,19 +193,19 @@ copyFiles "$SOURCE_GPS" "$TARGET_GPS"
 copyFiles "$SOURCE_VID" "$TARGET_VID"
 
 
-read -p "❓ Dismount ${TARGET}? [yes/no] " targetYN
+read -p "❓ Dismount ${TARGET_VOLUME}? [yes/no] " targetYN
 if [[ "$targetYN" == "yes" ]]; then 
-  diskutil eject "${TARGET}"
+  diskutil eject "${TARGET_VOLUME}"
   echo
 fi
 
-read -p "❓ Format and/or dismount ${SOURCE}? [FORMAT/dis/no] " sourceYN
+read -p "❓ Format and/or dismount ${SOURCE_VOLUME}? [FORMAT/dis/no] " sourceYN
 if [[ "$sourceYN" == "FORMAT" ]]; then 
-  diskutil reformat "${SOURCE}"
-  diskutil eject "${SOURCE}"
+  diskutil reformat "${SOURCE_VOLUME}"
+  diskutil eject "${SOURCE_VOLUME}"
   echo
 else if [[ "$sourceYN" == "dis" ]]; then 
-  diskutil eject "${SOURCE}"
+  diskutil eject "${SOURCE_VOLUME}"
   echo
 fi; fi
 
