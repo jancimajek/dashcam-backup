@@ -65,12 +65,12 @@ function copyFiles() {
     local timeInMs="$1"
 
     local ms=$( echo "scale=0; $timeInMs % 60000" | bc)
-    local s=$( echo "scale=3; $ms / 1000" | bc)
+    local s=$( echo "scale=1; $ms / 1000" | bc)
     local m=$( echo "scale=0; $timeInMs /1000 / 60 % 60" | bc)
     local h=$( echo "scale=0; $timeInMs /1000 / 3600" | bc)
 
     [[ "$h" -gt 0 ]] && printf "%dh%02dm" "$h" "$m" && return
-    [[ "$m" -gt 0 ]] && printf "%02dm%02.0fs" "$m" "$s" && return
+    [[ "$m" -gt 0 ]] && printf "%02dm%02ds" "$m" "$s" && return
     printf "%02.1fs" "$s"; 
   }
 
