@@ -96,6 +96,10 @@ function copyFiles() {
   }
 
   function progress() {
+    printf "%s [%03d/%03d] %s\n" "$1" "$total" "$filesCount" "$2"
+  }
+
+  function progressETA() {
     local remaining=$( echo "scale=0; ((( $(now) - $start ) / $total) * ($filesCount - $total))" | bc)
     printf "%s [%03d/%03d] %s [⏳%s]\n" "$1" "$total" "$filesCount" "$2" "$( getTimeStr "$remaining")"
   }
@@ -180,7 +184,7 @@ function copyFiles() {
     ((total++))
     if [[ $retVal -eq 0 ]]; then 
       ((copied++))
-      progress "✅" "$file → $targetFile"
+      progressETA "✅" "$file → $targetFile"
     else 
       error 4 "Error: $errorMsg"
     fi
