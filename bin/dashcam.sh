@@ -64,15 +64,23 @@ function copyFiles() {
   function getTimeStr() {
     local timeInMs="$1"
 
-    local ms=$( echo "scale=0; $timeInMs % 60000" | bc)
-    local s0=$( echo "scale=0; $ms / 1000" | bc)
-    local s1=$( echo "scale=1; $ms / 1000" | bc)
-    local m=$( echo "scale=0; $timeInMs /1000 / 60 % 60" | bc)
     local h=$( echo "scale=0; $timeInMs /1000 / 3600" | bc)
+    local m=$( echo "scale=0; $timeInMs /1000 / 60 % 60" | bc)
 
-    [[ "$h" -gt 0 ]] && printf "%dh%02dm" "$h" "$m" && return
-    [[ "$m" -gt 0 ]] && printf "%02dm%02ds" "$m" "$s0" && return
-    printf "%02.1fs" "$s1"; 
+    if [[ "$h" -gt 0 ]]; then
+      printf "%dh%02dm" "$h" "$m"
+      return
+    fi
+
+    local ms=$( echo "scale=0; $timeInMs % 60000" | bc)
+
+    if [[ "$m" -gt 0 ]]; then
+      local s=$( echo "scale=0; $ms / 1000" | bc)
+      printf "%02dm%02ds" "$m" "$s"
+    else
+      local s=$( echo "scale=1; $ms / 1000" | bc)
+      printf "%02.1fs" "$s"
+    fi
   }
 
   function stats() {
@@ -88,6 +96,10 @@ function copyFiles() {
   }
 
   function progress() {
+    printf "%s [%03d/%03d] %s\n" "$1" "$total" "$filesCount" "$2"
+  }
+
+  function progressETA() {
     local remaining=$( echo "scale=0; ((( $(now) - $start ) / $total) * ($filesCount - $total))" | bc)
     printf "%s [%03d/%03d] %s [⏳%s]\n" "$1" "$total" "$filesCount" "$2" "$( getTimeStr "$remaining")"
   }
@@ -172,7 +184,7 @@ function copyFiles() {
     ((total++))
     if [[ $retVal -eq 0 ]]; then 
       ((copied++))
-      progress "✅" "$file → $targetFile"
+      progressETA "✅" "$file → $targetFile"
     else 
       error 4 "Error: $errorMsg"
     fi
