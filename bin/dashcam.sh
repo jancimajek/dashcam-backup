@@ -10,9 +10,11 @@ SOURCE_POST_ACTION="prompt"
 TARGET_POST_ACTION="prompt"
 
 function usage () {
-  echo "Usage: dashcam.sh [-s <SOURCE_VOLUME>] [-t <TARGET_VOLUME>] [-h]"
-  echo " - Default SOURCE_VOLUME: $SOURCE_VOLUME"
-  echo " - Default TARGET_VOLUME: $TARGET_VOLUME"
+  echo "Usage: dashcam.sh [-s <SOURCE_VOLUME>] [-t <TARGET_VOLUME>] [-F <prompt|FORMAT|dis|no>] [-d <prompt|yes|no>] [-h]"
+  echo " -s: SOURCE_VOLUME, default: $SOURCE_VOLUME"
+  echo " -t: TARGET_VOLUME, default: $TARGET_VOLUME"
+  echo " -F: Should we [FORMAT] or [dis]mount the SOURCE_VOLUME after copying? Default: [prompt]"
+  echo " -d: Should we [dis]mount the TARGET_VOLUME after copying? Default: [prompt]"
   exit
 }
 
