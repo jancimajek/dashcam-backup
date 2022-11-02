@@ -225,16 +225,23 @@ else
 fi
 echo
 
-read -p "❓ Format and/or dismount ${SOURCE_VOLUME}? [FORMAT/dis/no] " sourceYN
-if [[ "$sourceYN" == "FORMAT" ]]; then 
-  diskutil reformat "${SOURCE_VOLUME}"
-  diskutil eject "${SOURCE_VOLUME}"
-  echo
-else if [[ "$sourceYN" == "dis" ]]; then 
-  diskutil eject "${SOURCE_VOLUME}"
-  echo
-fi; fi
 
+sourceYN="$SOURCE_POST_ACTION"
+if [[ "$SOURCE_POST_ACTION" == "prompt" ]]; then
+  read -p "❓ Format and/or dismount ${SOURCE_VOLUME}? [FORMAT/dis/no] " sourceYN
+fi
+
+if [[ "$sourceYN" == "FORMAT" ]]; then 
+  echo "🗑 FORMATTING & ejecting source volume: $SOURCE_VOLUME"
+  # diskutil reformat "${SOURCE_VOLUME}"
+  # diskutil eject "${SOURCE_VOLUME}"
+elif [[ "$sourceYN" == "dis" ]]; then 
+  echo "⏏️ Ejecting source volume without formatting: $SOURCE_VOLUME"
+  # diskutil eject "${SOURCE_VOLUME}"
+else
+  echo "⏩ No further action on source volume: $SOURCE_VOLUME"
+fi
+echo
 
 echo "✨ Done"
 
