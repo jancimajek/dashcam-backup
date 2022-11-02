@@ -59,8 +59,8 @@ function copyFiles() {
   local source="$1"
   local target="$2"
 
-  echo "Source: $source"
-  echo "Target: $target"
+  echo "↗️  Source: $source"
+  echo "↘️  Target: $target"
   echo "----------------------------------------"
 
   function now() {
