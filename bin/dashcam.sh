@@ -6,6 +6,8 @@ IFS=$'\n\t'
 
 SOURCE_VOLUME="/Volumes/DASHCAM"
 TARGET_VOLUME="/Volumes/My Passport for Mac"
+SOURCE_POST_ACTION="prompt"
+TARGET_POST_ACTION="prompt"
 
 function usage () {
   echo "Usage: dashcam.sh [-s <SOURCE_VOLUME>] [-t <TARGET_VOLUME>] [-h]"
@@ -14,10 +16,12 @@ function usage () {
   exit
 }
 
-while getopts ":s:t:h" flag; do
+while getopts ":s:t:F:d:h" flag; do
   case "$flag" in
     s) SOURCE_VOLUME="$OPTARG";;
     t) TARGET_VOLUME="$OPTARG";;
+    F) SOURCE_POST_ACTION="$OPTARG";;
+    d) TARGET_POST_ACTION="$OPTARG";;
     h | *) usage;;
   esac
 done
