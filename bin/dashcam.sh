@@ -212,11 +212,18 @@ copyFiles "$SOURCE_GPS" "$TARGET_GPS"
 copyFiles "$SOURCE_VID" "$TARGET_VID"
 
 
-read -p "❓ Dismount ${TARGET_VOLUME}? [yes/no] " targetYN
-if [[ "$targetYN" == "yes" ]]; then 
-  diskutil eject "${TARGET_VOLUME}"
-  echo
+targetYN="$TARGET_POST_ACTION"
+if [[ "$TARGET_POST_ACTION" == "prompt" ]]; then
+  read -p "❓ Dismount ${TARGET_VOLUME}? [yes/no] " targetYN
 fi
+
+if [[ "$targetYN" == "yes" ]]; then 
+  echo "⏏️ Ejecting target volume: $TARGET_VOLUME"
+  # diskutil eject "${TARGET_VOLUME}"
+else
+  echo "⏩ No further action on target volume: $TARGET_VOLUME"
+fi
+echo
 
 read -p "❓ Format and/or dismount ${SOURCE_VOLUME}? [FORMAT/dis/no] " sourceYN
 if [[ "$sourceYN" == "FORMAT" ]]; then 
