@@ -219,7 +219,7 @@ fi
 
 if [[ "$targetYN" == "yes" ]]; then 
   echo "⏏️ Ejecting target volume: $TARGET_VOLUME"
-  # diskutil eject "${TARGET_VOLUME}"
+  diskutil eject "${TARGET_VOLUME}"
 else
   echo "⏩ No further action on target volume: $TARGET_VOLUME"
 fi
@@ -233,11 +233,11 @@ fi
 
 if [[ "$sourceYN" == "FORMAT" ]]; then 
   echo "🗑 FORMATTING & ejecting source volume: $SOURCE_VOLUME"
-  # diskutil reformat "${SOURCE_VOLUME}"
-  # diskutil eject "${SOURCE_VOLUME}"
+  diskutil reformat "${SOURCE_VOLUME}"
+  diskutil eject "${SOURCE_VOLUME}"
 elif [[ "$sourceYN" == "dis" ]]; then 
   echo "⏏️ Ejecting source volume without formatting: $SOURCE_VOLUME"
-  # diskutil eject "${SOURCE_VOLUME}"
+  diskutil eject "${SOURCE_VOLUME}"
 else
   echo "⏩ No further action on source volume: $SOURCE_VOLUME"
 fi
