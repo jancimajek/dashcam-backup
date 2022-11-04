@@ -6,18 +6,24 @@ IFS=$'\n\t'
 
 SOURCE_VOLUME="/Volumes/DASHCAM"
 TARGET_VOLUME="/Volumes/My Passport for Mac"
+SOURCE_POST_ACTION="prompt"
+TARGET_POST_ACTION="prompt"
 
 function usage () {
-  echo "Usage: dashcam.sh [-s <SOURCE_VOLUME>] [-t <TARGET_VOLUME>] [-h]"
-  echo " - Default SOURCE_VOLUME: $SOURCE_VOLUME"
-  echo " - Default TARGET_VOLUME: $TARGET_VOLUME"
+  echo "Usage: dashcam.sh [-s <SOURCE_VOLUME>] [-t <TARGET_VOLUME>] [-F <prompt|FORMAT|dis|no>] [-d <prompt|yes|no>] [-h]"
+  echo " -s: SOURCE_VOLUME, default: $SOURCE_VOLUME"
+  echo " -t: TARGET_VOLUME, default: $TARGET_VOLUME"
+  echo " -F: Should we [FORMAT] or [dis]mount the SOURCE_VOLUME after copying? Default: [prompt]"
+  echo " -d: Should we [dis]mount the TARGET_VOLUME after copying? Default: [prompt]"
   exit
 }
 
-while getopts ":s:t:h" flag; do
+while getopts ":s:t:F:d:h" flag; do
   case "$flag" in
     s) SOURCE_VOLUME="$OPTARG";;
     t) TARGET_VOLUME="$OPTARG";;
+    F) SOURCE_POST_ACTION="$OPTARG";;
+    d) TARGET_POST_ACTION="$OPTARG";;
     h | *) usage;;
   esac
 done
@@ -53,8 +59,8 @@ function copyFiles() {
   local source="$1"
   local target="$2"
 
-  echo "Source: $source"
-  echo "Target: $target"
+  echo "↗️  Source: $source"
+  echo "↘️  Target: $target"
   echo "----------------------------------------"
 
   function now() {
@@ -206,22 +212,36 @@ copyFiles "$SOURCE_GPS" "$TARGET_GPS"
 copyFiles "$SOURCE_VID" "$TARGET_VID"
 
 
-read -p "❓ Dismount ${TARGET_VOLUME}? [yes/no] " targetYN
-if [[ "$targetYN" == "yes" ]]; then 
-  diskutil eject "${TARGET_VOLUME}"
-  echo
+targetYN="$TARGET_POST_ACTION"
+if [[ "$TARGET_POST_ACTION" == "prompt" ]]; then
+  read -p "❓ Dismount ${TARGET_VOLUME}? [yes/no] " targetYN
 fi
 
-read -p "❓ Format and/or dismount ${SOURCE_VOLUME}? [FORMAT/dis/no] " sourceYN
+if [[ "$targetYN" == "yes" ]]; then 
+  echo "⏏️ Ejecting target volume: $TARGET_VOLUME"
+  diskutil eject "${TARGET_VOLUME}"
+else
+  echo "⏩ No further action on target volume: $TARGET_VOLUME"
+fi
+echo
+
+
+sourceYN="$SOURCE_POST_ACTION"
+if [[ "$SOURCE_POST_ACTION" == "prompt" ]]; then
+  read -p "❓ Format and/or dismount ${SOURCE_VOLUME}? [FORMAT/dis/no] " sourceYN
+fi
+
 if [[ "$sourceYN" == "FORMAT" ]]; then 
+  echo "🗑 FORMATTING & ejecting source volume: $SOURCE_VOLUME"
   diskutil reformat "${SOURCE_VOLUME}"
   diskutil eject "${SOURCE_VOLUME}"
-  echo
-else if [[ "$sourceYN" == "dis" ]]; then 
+elif [[ "$sourceYN" == "dis" ]]; then 
+  echo "⏏️ Ejecting source volume without formatting: $SOURCE_VOLUME"
   diskutil eject "${SOURCE_VOLUME}"
-  echo
-fi; fi
-
+else
+  echo "⏩ No further action on source volume: $SOURCE_VOLUME"
+fi
+echo
 
 echo "✨ Done"
 
