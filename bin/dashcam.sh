@@ -160,29 +160,32 @@ function copyFiles() {
 
     # Check if target file exists
     if [[ -e "$targetFile" ]]; then
-      ((total++))
-
       # If target is newer than source, error out
       if [[ "$targetFile" -nt "$file" ]]; then
+        ((total++))
         error 2 "Error: Target file exists and is NEWER than source: $file -❌→ $targetFile"
       fi
 
       # If file sizes don't match
       srcSize=$(stat -f "%z" "$file")
       tgtSize=$(stat -f "%z" "$targetFile")
-      if [[ srcSize -ne tgtSize ]]; then
-        error 3 "Error: Target file exists and is DIFERENT SIZE than source: $file (${srcSize}B) -❌→ $targetFile (${tgtSize}B)"
+      if [[ srcSize -lt tgtSize ]]; then
+        ((total++))
+        error 3 "Error: Target file exists and is bigger than source: $file (${srcSize}B) -❌→ $targetFile (${tgtSize}B)"
       fi
 
-      progress "⏩" "Target file exists, skipping: $targetFile"
-      ((skipped++))
-      continue
+      if [[ srcSize -eq tgtSize ]]; then
+        progress "⏩" "Target file exists (same size), skipping: $targetFile"
+        ((total++))
+        ((skipped++))
+        continue
+      fi
     fi
 
     # Copy and rename file into the target dir without overwriting
     # file --> TARGET_VID/YYYY-MM/YYYY-MM-DD/YYYY-MM-DD-HH-MM-SS-FILENAME.EXT
     set +e
-    errorMsg=$(cp -nvp "${file}" "$targetFile" 2>&1)
+    errorMsg=$(cp -vp "${file}" "$targetFile" 2>&1)
     retVal=$?
     set -e
 
