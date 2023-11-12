@@ -92,27 +92,29 @@ function copyFiles() {
   function stats() {
     local elapsed=$(( $(now) - $start ))
 
-    echo "----------------------------------------"
-    printf "✅ Copied:  %03d / %03d\n" "$copied" "$filesCount"
-    printf "⏩ Skipped: %03d / %03d\n" "$skipped" "$filesCount"
-    [[ $errors -gt 0 ]] && printf "❌ Errors:  %03d / %03d\n" "$errors" "$filesCount"
-    printf "⨊  TOTAL:   %03d / %03d\n" $(( $copied + $skipped + $errors)) "$filesCount"
+    printf "\033[s\033[0K\033[u"
+    printf "✅ Copied:  %03d / %03d\033[0K\n" "$copied" "$filesCount"
+    printf "⏩ Skipped: %03d / %03d\033[0K\n" "$skipped" "$filesCount"
+    [[ $errors -gt 0 ]] && printf "❌ Errors:  %03d / %03d\033[0K\n" "$errors" "$filesCount"
+    printf "⨊  TOTAL:   %03d / %03d\033[0K\n" $(( $copied + $skipped + $errors)) "$filesCount"
     echo "⌛️ Took:    $( getTimeStr "$elapsed" )"
     echo "========================================"
   }
 
   function progress() {
-    printf "%s [%03d/%03d] %s\n" "$1" "$total" "$filesCount" "$2"
+    printf "\033[s%s [%03d/%03d] %s\033[0K\033[u" "$1" "$total" "$filesCount" "$2"
   }
 
   function progressETA() {
     local remaining=$( echo "scale=0; ((( $(now) - $start ) / $total) * ($filesCount - $total))" | bc)
-    printf "%s [%03d/%03d] %s [⏳%s]\n" "$1" "$total" "$filesCount" "$2" "$( getTimeStr "$remaining")"
+    printf "\033[s%s [%03d/%03d] %s [⏳%s]\033[0K\033[u" "$1" "$total" "$filesCount" "$2" "$( getTimeStr "$remaining")"
   }
 
   function error() {
     progress "❌" "$2"
     ((errors++))
+    
+    echo
     stats
     echo "✨ Done"
 
