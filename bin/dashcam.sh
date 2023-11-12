@@ -162,12 +162,6 @@ function copyFiles() {
 
     # Check if target file exists
     if [[ -e "$targetFile" ]]; then
-      # If target is newer than source, error out
-      if [[ "$targetFile" -nt "$file" ]]; then
-        ((total++))
-        error 2 "Error: Target file exists and is NEWER than source: $file -❌→ $targetFile"
-      fi
-
       # If file sizes don't match
       srcSize=$(stat -f "%z" "$file")
       tgtSize=$(stat -f "%z" "$targetFile")
